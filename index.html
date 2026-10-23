@@ -116,6 +116,10 @@
             🎭 Spectacles
         </button>
 
+<button onclick="afficherPage('admin')">
+    🔐 Administration
+</button>
+
         <button onclick="afficherPage('livre')">
             ⭐ Livre d'or
         </button>
@@ -229,12 +233,60 @@
     <div id="listeReservations"></div>
 </section>
 
-        <section id="spectacles" class="page" hidden>
-            <h2>🎭 Spectacles</h2>
-            <p>Chants, danses et surprises de Noël !</p>
-        </section>
 
-       
+<section id="spectacles" class="page" hidden>
+    <h2>🎭 Spectacles</h2>
+
+    <p id="messageSpectacle">
+        Le thème de cette représentation sera bientôt publié, merci de patienter.
+    </p>
+
+    <div id="themePublie" hidden>
+        <h3>🎄 Thème de la représentation</h3>
+        <p id="texteTheme"></p>
+    </div>
+</section>
+    
+<section id="admin" class="page" hidden>
+    <h2>🔐 Administration</h2>
+
+    
+<form id="connexionAdmin">
+    <label for="emailAdmin">Adresse e-mail administrateur :</label>
+    <input
+        type="email"
+        id="emailAdmin"
+        placeholder="Ton adresse e-mail"
+        required
+        autocomplete="username"
+    >
+
+    <label for="motDePasseAdmin">Mot de passe :</label>
+    <input
+        type="password"
+        id="motDePasseAdmin"
+        placeholder="Ton mot de passe"
+        required
+        autocomplete="current-password"
+    >
+
+    <button type="submit">Se connecter</button>
+</form>
+
+    <div id="contenuAdmin" hidden>
+        <h3>🎭 Publier le thème du spectacle</h3>
+        <textarea
+            id="nouveauTheme"
+            placeholder="Écris ici le thème du spectacle..."
+            rows="4"
+        ></textarea>
+        <button type="button" id="publierTheme">
+            Publier le thème
+        </button>
+        <p id="messageAdmin"></p>
+    </div>
+</section>
+   
 <section id="livre" class="page" hidden>
     <h2>⭐ Livre d'or de Noël</h2>
 
@@ -278,7 +330,7 @@
   
  
             });
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
     // CHANGER DE PAGE
@@ -292,23 +344,95 @@
         document.getElementById(id).hidden = false;
     }
 
-    // RESERVATIONS
-    document.getElementById("formReservation")
-        .addEventListener("submit", function(event) {
+    
+  // RESERVATIONS - SUPABASE
+  const SUPABASE_URL = "https://mxtqnttjojtjwojhbeei.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_vH0e3eftGrYLksKy5vmHrQ_JnNXC0-a";
 
-        event.preventDefault();
+  const tableReservations = SUPABASE_URL + "/rest/v1/reservations";
+  const listeReservations = document.getElementById("listeReservations");
 
-        const nom = document.getElementById("nomReservation").value;
-        const activite = document.getElementById("activite").value;
+  // Afficher les réservations enregistrées en ligne
+  async function chargerReservations() {
+      try {
+          const reponse = await fetch(
+              tableReservations + "?select=*&order=created_at.asc",
+              {
+                  headers: {
+                      "apikey": SUPABASE_KEY,
+                      "Authorization": "Bearer " + SUPABASE_KEY
+                  }
+              }
+          );
 
-        const inscription = document.createElement("p");
-        inscription.textContent = "🎄 " + nom + " : " + activite;
+          if (!reponse.ok) {
+              throw new Error("Impossible de charger les réservations.");
+          }
 
-        document.getElementById("listeReservations")
-            .appendChild(inscription);
+          const reservations = await reponse.json();
+          listeReservations.replaceChildren();
 
-        this.reset();
-    });
+          reservations.forEach(function(reservation) {
+              const inscription = document.createElement("p");
+              inscription.textContent =
+                  "🎄 " + reservation.nom + " : " + reservation.details;
+              listeReservations.appendChild(inscription);
+          });
+      } catch (erreur) {
+          console.error(erreur);
+          listeReservations.textContent =
+              "Impossible de charger les réservations. Réessaie plus tard.";
+      }
+  }
+
+  // Enregistrer une réservation en ligne
+  document.getElementById("formReservation")
+      .addEventListener("submit", async function(event) {
+          event.preventDefault();
+
+          const nom = document.getElementById("nomReservation").value.trim();
+          const activite = document.getElementById("activite").value.trim();
+
+          if (!nom || !activite) {
+              alert("Remplis les deux champs.");
+              return;
+          }
+
+          const bouton = this.querySelector('[type="submit"]');
+          if (bouton) bouton.disabled = true;
+
+          try {
+              const reponse = await fetch(tableReservations, {
+                  method: "POST",
+                  headers: {
+                      "apikey": SUPABASE_KEY,
+                      "Authorization": "Bearer " + SUPABASE_KEY,
+                      "Content-Type": "application/json",
+                      "Prefer": "return=minimal"
+                  },
+                  body: JSON.stringify({
+                      nom: nom,
+                      details: activite
+                  })
+              });
+
+              if (!reponse.ok) {
+                  throw new Error(await reponse.text());
+              }
+
+              this.reset();
+              await chargerReservations();
+         } catch (erreur) {
+    console.error("Erreur Supabase :", erreur);
+    alert("Erreur : " + erreur.message);
+} 
+finally {
+              if (bouton) bouton.disabled = false;
+          }
+      });
+
+  // Charger les réservations à l'ouverture de la page
+  chargerReservations();
 
     // LIVRE D'OR AVEC SAUVEGARDE
     const listeMessages = document.getElementById("listeMessages");
@@ -474,6 +598,102 @@
 
     // UN NOUVEAU FLOCON REGULIEREMENT
     setInterval(creerFlocon, 250);
+</script>
+
+<script>
+const clientAdmin = window.supabase.createClient(
+    "https://mxtqnttjojtjwojhbeei.supabase.co",
+    "44943877-9fe9-460e-89aa-1ea67203ddc6"
+);
+
+let sessionAdmin = null;
+
+document.getElementById("connexionAdmin").addEventListener("submit", async function(e) {
+ e.preventDefault();
+
+    const email = document.getElementById("emailAdmin").value;
+    const password = document.getElementById("motDePasseAdmin").value;
+    const message = document.getElementById("messageAdmin");
+
+   
+message.textContent = "Connexion en cours...";
+
+try {
+    const { data, error } = await clientAdmin.auth.signInWithPassword({
+        email: email,
+        password: password
+    });
+
+    if (error) {
+        message.textContent = "Erreur Supabase : " + error.message;
+        return;
+    }
+
+    sessionAdmin = data.session;
+    document.getElementById("contenuAdmin").hidden = false;
+    message.textContent = "Connexion réussie ! Tu peux publier le thème.";
+
+} catch (erreur) {
+    message.textContent = "Erreur JavaScript : " + erreur.message;
+    console.error(erreur);
+}
+    sessionAdmin = data.session;
+
+    document.getElementById("contenuAdmin").hidden = false;
+    message.textContent = "Connexion réussie ! Tu peux publier le thème.";
+});
+
+document.getElementById("publierTheme").addEventListener("click", async function() {
+    const message = document.getElementById("messageAdmin");
+
+    if (!sessionAdmin) {
+        message.textContent = "Connecte-toi avant de publier.";
+        return;
+    }
+
+    const theme = document.getElementById("nouveauTheme").value.trim();
+
+    if (!theme) {
+        message.textContent = "Écris un thème avant de publier.";
+        return;
+    }
+
+    message.textContent = "Publication en cours...";
+
+    const { error } = await clientAdmin
+        .from("site_settings")
+        .update({
+            theme_spectacle: theme,
+            updated_at: new Date().toISOString()
+        })
+        .eq("id", 1);
+
+    if (error) {
+        message.textContent = "Erreur de publication : " + error.message;
+        return;
+    }
+
+    document.getElementById("texteTheme").textContent = theme;
+    document.getElementById("themePublie").hidden = false;
+    document.getElementById("messageSpectacle").hidden = true;
+    message.textContent = "Thème publié avec succès ! 🎄";
+});
+
+async function chargerThemeSpectacle() {
+    const { data, error } = await clientAdmin
+        .from("site_settings")
+        .select("theme_spectacle")
+        .eq("id", 1)
+        .maybeSingle();
+
+    if (!error && data && data.theme_spectacle) {
+        document.getElementById("texteTheme").textContent = data.theme_spectacle;
+        document.getElementById("themePublie").hidden = false;
+        document.getElementById("messageSpectacle").hidden = true;
+    }
+}
+
+chargerThemeSpectacle();
 </script>
 
 </html>
