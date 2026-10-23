@@ -1,0 +1,479 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soirée de Noël</title>
+</head>
+<body>
+
+    <h1>🎅 Soirée de Noël</h1>
+
+
+    <style>
+        /* DESIGN GENERAL */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #0b447d;
+            color: white;
+        }
+
+        /* BANDEAU ROUGE */
+        header {
+            background-color: #c92327;
+            text-align: center;
+            padding: 10px;
+            height: 90px;
+        }
+
+        header h1 {
+            margin: 0;
+            padding-top: 2px;
+            font-size: 32px;
+        }
+
+        /* MENU VERT */
+        nav {
+            background-color: #105631;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        nav button {
+            background-color: #f1f1f1;
+            color: black;
+            border: none;
+            border-radius: 11px;
+            padding: 12px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        nav button:hover {
+            background-color: #ffd966;
+        }
+
+        /* ZONE PRINCIPALE */
+        main {
+            padding: 30px 19px;
+            min-height: 380px;
+        }
+
+        .page {
+            background-color: #2e5f8d;
+            padding: 15px;
+            border-radius: 15px;
+            min-height: 300px;
+        }
+
+        .page h2 {
+            font-size: 24px;
+        }
+
+        /* ADAPTATION AUX PETITS ECRANS */
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 25px;
+            }
+
+            nav {
+                gap: 8px;
+            }
+
+            main {
+                padding: 20px 12px;
+            }
+        }
+    </style>
+
+    <header>
+        <h1>🎅 Soirée de Noël</h1>
+    </header>
+
+    <nav>
+        <button onclick="afficherPage('accueil')">
+            🏠 Accueil
+        </button>
+
+        <button onclick="afficherPage('programme')">
+            🗓️ Programme
+        </button>
+
+        <button onclick="afficherPage('reservations')">
+            🎲 Réservations
+        </button>
+
+        <button onclick="afficherPage('spectacles')">
+            🎭 Spectacles
+        </button>
+
+        <button onclick="afficherPage('livre')">
+            ⭐ Livre d'or
+        </button>
+    </nav>
+
+    <main>
+
+        <section id="accueil" class="page">
+            <h2>Bienvenue !</h2>
+
+            <p>Participants :</p>
+
+            <ul>
+                <li>Papy</li>
+                <li>Mamie</li>
+                <li>Papa</li>
+                <li>Maman</li>
+                <li>Tonton</li>
+                <li>Tata</li>
+                <li>Gabriel</li>
+                <li>Lise</li>
+                <li>Mia</li>
+                <li>Mélia</li>
+            </ul>
+       
+            <hr>
+
+            <h2>🎁 Qui apporte quoi ?</h2>
+
+            <p>
+                Note ton prénom et l'objet que tu apportes
+                pour la soirée de Noël !
+            </p>
+
+            <form id="formObjets">
+
+                <label for="nomObjet">Qui apporte l'objet ?</label>
+
+                <input
+                    type="text"
+                    id="nomObjet"
+                    placeholder="Exemple : Gabriel"
+                    required
+                >
+
+                <label for="objetApporte">Quel objet ?</label>
+
+                <input
+                    type="text"
+                    id="objetApporte"
+                    placeholder="Exemple : gâteau au chocolat"
+                    required
+                >
+
+                <button type="submit">🎄 Ajouter mon objet</button>
+
+            </form>
+
+            <h3>📋 Liste des objets apportés</h3>
+
+            <div id="listeObjets"></div>
+
+ </section>
+
+        <section id="programme" class="page" hidden>
+            <h2>🗓️ Programme de Noël</h2>
+            <p>18 h 00 : Accueil de la famille 🎄</p>
+            <p>19 h 00 : Jeux de Noël 🎲</p>
+            <p>20 h 00 : Repas de Noël 🍽️</p>
+            <p>21 h 30 : Ouverture des cadeaux 🎁</p>
+        </section>
+
+        
+<section id="reservations" class="page" hidden>
+    <h2>🎲 Réservations</h2>
+
+    <p>Inscris-toi à une activité de Noël !</p>
+
+    <form id="formReservation">
+
+        <label for="nomReservation">Ton prénom :</label>
+
+        <input
+            type="text"
+            id="nomReservation"
+            placeholder="Exemple : Gabriel"
+            required
+        >
+
+        <br><br>
+
+        <label for="activite">Choisis une activité :</label>
+
+        <select id="activite" required>
+            <option value="">-- Choisir une activité --</option>
+            <option>Jeux de Noël</option>
+            <option>Préparation du repas</option>
+            <option>Décoration du sapin</option>
+            <option>Distribution des cadeaux</option>
+            <option>Spectacle</option>
+        </select>
+
+        <br><br>
+
+        <button type="submit">🎄 Confirmer</button>
+
+    </form>
+
+    <h3>Liste des inscriptions</h3>
+
+    <div id="listeReservations"></div>
+</section>
+
+        <section id="spectacles" class="page" hidden>
+            <h2>🎭 Spectacles</h2>
+            <p>Chants, danses et surprises de Noël !</p>
+        </section>
+
+       
+<section id="livre" class="page" hidden>
+    <h2>⭐ Livre d'or de Noël</h2>
+
+    <p>Laisse un joli message pour toute la famille ! 🎄</p>
+
+    <form id="formMessage">
+
+        <label for="nomMessage">Ton prénom :</label>
+
+        <input
+            type="text"
+            id="nomMessage"
+            placeholder="Exemple : Mamie"
+            required
+        >
+
+        <br><br>
+
+        <label for="texteMessage">Ton message :</label>
+
+        <textarea
+            id="texteMessage"
+            rows="4"
+            placeholder="Joyeux Noël à tous ! ❤️"
+            required
+        ></textarea>
+
+        <br><br>
+
+        <button type="submit">⭐ Publier mon message</button>
+
+    </form>
+
+    <h3>💌 Les messages de la famille</h3>
+
+    <div id="listeMessages"></div>
+</section>
+
+    </main>
+
+  
+ 
+            });
+
+
+<script>
+    // CHANGER DE PAGE
+    function afficherPage(id) {
+        document.querySelectorAll(".page").forEach(
+            function(page) {
+                page.hidden = true;
+            }
+        );
+
+        document.getElementById(id).hidden = false;
+    }
+
+    // RESERVATIONS
+    document.getElementById("formReservation")
+        .addEventListener("submit", function(event) {
+
+        event.preventDefault();
+
+        const nom = document.getElementById("nomReservation").value;
+        const activite = document.getElementById("activite").value;
+
+        const inscription = document.createElement("p");
+        inscription.textContent = "🎄 " + nom + " : " + activite;
+
+        document.getElementById("listeReservations")
+            .appendChild(inscription);
+
+        this.reset();
+    });
+
+    // LIVRE D'OR AVEC SAUVEGARDE
+    const listeMessages = document.getElementById("listeMessages");
+
+    // Charger les anciens messages
+    let messages = JSON.parse(
+        localStorage.getItem("messagesNoel") || "[]"
+    );
+
+    function afficherMessages() {
+        listeMessages.replaceChildren();
+
+        messages.forEach(function(message) {
+            const carte = document.createElement("div");
+            carte.style.backgroundColor = "#214f7b";
+            carte.style.padding = "12px";
+            carte.style.margin = "10px 0";
+            carte.style.borderRadius = "10px";
+
+            const titre = document.createElement("h3");
+            titre.textContent = "⭐ " + message.nom;
+
+            const texte = document.createElement("p");
+            texte.textContent = message.texte;
+
+            carte.appendChild(titre);
+            carte.appendChild(texte);
+            listeMessages.appendChild(carte);
+        });
+    }
+
+    // Publier et sauvegarder un message
+    document.getElementById("formMessage")
+        .addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const nom = document.getElementById("nomMessage").value;
+            const texte = document.getElementById("texteMessage").value;
+
+            messages.push({
+                nom: nom,
+                texte: texte
+            });
+
+            localStorage.setItem(
+                "messagesNoel",
+                JSON.stringify(messages)
+            );
+
+            afficherMessages();
+            this.reset();
+        });
+
+    // Afficher les messages dès l'ouverture du site
+    afficherMessages();
+
+    // OBJETS APPORTES POUR NOEL
+    const formObjets = document.getElementById("formObjets");
+    const listeObjets = document.getElementById("listeObjets");
+
+    let objetsNoel = JSON.parse(
+        localStorage.getItem("objetsNoel") || "[]"
+    );
+
+    function afficherObjets() {
+        listeObjets.replaceChildren();
+
+        if (objetsNoel.length === 0) {
+            const vide = document.createElement("p");
+            vide.textContent = "Aucun objet inscrit pour le moment.";
+            listeObjets.appendChild(vide);
+        }
+
+        objetsNoel.forEach(function(objet, index) {
+            const carte = document.createElement("div");
+            carte.style.backgroundColor = "#214f7b";
+            carte.style.padding = "12px";
+            carte.style.margin = "10px 0";
+            carte.style.borderRadius = "10px";
+
+            const texte = document.createElement("p");
+            texte.textContent = "🎁 " + objet.nom + " apporte : " + objet.objet;
+
+            const bouton = document.createElement("button");
+            bouton.textContent = "❌ Supprimer";
+            bouton.type = "button";
+
+            bouton.addEventListener("click", function() {
+                objetsNoel.splice(index, 1);
+                localStorage.setItem("objetsNoel", JSON.stringify(objetsNoel));
+                afficherObjets();
+            });
+
+            carte.appendChild(texte);
+            carte.appendChild(bouton);
+            listeObjets.appendChild(carte);
+        });
+    }
+
+    formObjets.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const nom = document.getElementById("nomObjet").value.trim();
+        const objet = document.getElementById("objetApporte").value.trim();
+
+        if (!nom || !objet) return;
+
+        objetsNoel.push({ nom: nom, objet: objet });
+        localStorage.setItem("objetsNoel", JSON.stringify(objetsNoel));
+
+        afficherObjets();
+        formObjets.reset();
+    });
+
+    afficherObjets();
+
+   </script>
+
+
+<style>
+    /* FLOCONS DE NEIGE */
+    .flocon {
+        position: fixed;
+        top: -30px;
+        color: white;
+        pointer-events: none;
+        z-index: 9999;
+        animation: tomber linear forwards;
+        text-shadow: 0 0 5px white;
+    }
+
+    @keyframes tomber {
+        0% {
+            transform: translateY(-30px) rotate(0deg);
+            opacity: 0.9;
+        }
+
+        100% {
+            transform: translateY(110vh) rotate(360deg);
+            opacity: 0.2;
+        }
+    }
+</style>
+
+<script>
+    // CREER DES FLOCONS DE NEIGE
+    function creerFlocon() {
+        const flocon = document.createElement("div");
+
+        flocon.className = "flocon";
+        flocon.textContent = "❄";
+
+        flocon.style.left = Math.random() * 100 + "vw";
+        flocon.style.fontSize = (10 + Math.random() * 20) + "px";
+        flocon.style.animationDuration = (5 + Math.random() * 7) + "s";
+
+        document.body.appendChild(flocon);
+
+        setTimeout(function() {
+            flocon.remove();
+        }, 12000);
+    }
+
+    // UN NOUVEAU FLOCON REGULIEREMENT
+    setInterval(creerFlocon, 250);
+</script>
+
+</html>
