@@ -601,10 +601,12 @@ finally {
 </script>
 
 <script>
+
 const clientAdmin = window.supabase.createClient(
-    "https://mxtqnttjojtjwojhbeei.supabase.co",
-    "44943877-9fe9-460e-89aa-1ea67203ddc6"
+    SUPABASE_URL,
+    SUPABASE_KEY
 );
+
 
 let sessionAdmin = null;
 
