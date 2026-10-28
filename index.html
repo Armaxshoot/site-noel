@@ -257,7 +257,7 @@
     <h2>🎭 Spectacles</h2>
 
     <p id="messageSpectacle">
-        Le thème de cette représentation sera bientôt publié, merci de patienter.
+        Joyeux Noël!
     </p>
 
     <div id="themePublie" hidden>
@@ -265,7 +265,7 @@
         <p id="texteTheme"></p>
     </div>
 </section>
-```html
+html
 <div id="verrouAdmin">
     <h2>🔐 Accès administrateur</h2>
     <p>Entre le mot de passe pour accéder à l'administration.</p>
@@ -646,7 +646,7 @@ let sessionAdmin = null;
 
 document.getElementById("connexionAdmin").addEventListener("submit", async function(e) {
  e.preventDefault();
-
+alert("Le bouton de connexion fonctionne !");
     const email = document.getElementById("emailAdmin").value;
     const password = document.getElementById("motDePasseAdmin").value;
     const message = document.getElementById("messageAdmin");
