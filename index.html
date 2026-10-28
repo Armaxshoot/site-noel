@@ -231,6 +231,25 @@
     <h3>Liste des inscriptions</h3>
 
     <div id="listeReservations"></div>
+<h3>📧 Recevoir les annonces du spectacle</h3>
+
+<form id="formInscriptionEmail">
+    <label for="emailAbonne">Ton adresse e-mail :</label>
+    <input
+        type="email"
+        id="emailAbonne"
+        placeholder="exemple@email.com"
+        required
+    >
+
+    <label>
+        <input type="checkbox" id="accordEmails" required>
+        J'accepte de recevoir les annonces du spectacle par e-mail.
+    </label>
+
+    <button type="submit">M'inscrire</button>
+    <p id="messageInscriptionEmail"></p>
+</form>
 </section>
 
 
@@ -246,7 +265,24 @@
         <p id="texteTheme"></p>
     </div>
 </section>
-    
+```html
+<div id="verrouAdmin">
+    <h2>🔐 Accès administrateur</h2>
+    <p>Entre le mot de passe pour accéder à l'administration.</p>
+
+    <input
+        type="password"
+        id="motDePasseSimple"
+        placeholder="Mot de passe"
+    >
+
+    <button type="button" onclick="deverrouillerAdmin()">
+        Déverrouiller
+    </button>
+
+    <p id="messageVerrou"></p>
+</div>
+```    
 <section id="admin" class="page" hidden>
     <h2>🔐 Administration</h2>
 
@@ -601,12 +637,10 @@ finally {
 </script>
 
 <script>
-
 const clientAdmin = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
+    "https://mxtqnttjojtjwojhbeei.supabase.co",
+    "44943877-9fe9-460e-89aa-1ea67203ddc6"
 );
-
 
 let sessionAdmin = null;
 
@@ -697,5 +731,72 @@ async function chargerThemeSpectacle() {
 
 chargerThemeSpectacle();
 </script>
+```html
+<script>
+function deverrouillerAdmin() {
+    const motDePasse = document.getElementById("motDePasseSimple").value;
+    const message = document.getElementById("messageVerrou");
 
+    if (motDePasse === "Pikachu!") {
+        document.getElementById("verrouAdmin").hidden = true;
+        document.getElementById("admin").hidden = false;
+    } else {
+        message.textContent = "Mot de passe incorrect. Réessaie.";
+    }
+}
+</script>
+```html
+<script>
+(async function () {
+    const clientInscription = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+    const formulaire = document.getElementById("formInscriptionEmail");
+
+    if (!formulaire) return;
+
+    formulaire.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const email = document.getElementById("emailAbonne").value
+            .trim()
+            .toLowerCase();
+
+        const accord = document.getElementById("accordEmails").checked;
+        const message = document.getElementById("messageInscriptionEmail");
+
+        if (!accord) {
+            message.textContent = "Merci de confirmer ton accord.";
+            return;
+        }
+
+        message.textContent = "Inscription en cours...";
+
+        const { error } = await clientInscription
+            .from("abonnes_emails")
+            .insert({
+                email: email,
+                accepte_emails: true
+            });
+
+        if (error) {
+            if (error.code === "23505") {
+                message.textContent = "Cette adresse est déjà inscrite.";
+            } else {
+                console.error(error);
+                message.textContent =
+                    "Impossible de s'inscrire pour le moment. Réessaie plus tard.";
+            }
+            return;
+        }
+
+        message.textContent =
+            "Inscription enregistrée ! Tu recevras les annonces du spectacle.";
+        formulaire.reset();
+    });
+})();
+</script>
+``````
 </html>
